@@ -3,8 +3,8 @@
 """
 from flask import Flask
 from flask_jwt import JWT
-from core.libraries.security import authenticate, identity
-from core.routes import app
+from app.libraries.security import authenticate, identity
+from app.routes import app
 
 
 __all__ = ["create_app", "initialize_security"]

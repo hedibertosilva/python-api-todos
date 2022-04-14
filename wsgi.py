@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    Web Server Gateway Interface [WSGI]
+    Web Server Gateway Interface (WSGI).
 """
 from run import app
 

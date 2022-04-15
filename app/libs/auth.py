@@ -1,117 +1,68 @@
-import os
-import jwt
-from datetime import datetime
-from datetime import timedelta
+from flask import abort
 from flask import request
+from flask.wrappers import Request
 from functools import wraps
-from werkzeug.security import check_password_hash
 
 from app.models.user import User
-
-
-_SECRET_KEY = os.environ['SECRET_KEY']
+from app.libs.token import Token
+from app.extensions.responses import success
 
 
 def auth_required(func):
     @wraps(func)
     def decorated(*args, **kwargs):
         if not Auth.is_authenticated(request):
-            return {
-                    "error": {
-                        "reason": "Authorization required."
-                    }
-                }, 401
+            abort(401, description="You supplied the wrong credentials! Expecting a Bearer Token.")
         return func(*args, **kwargs)
     return decorated
 
 
 class Auth:
-    @staticmethod
-    def login(request):
-        auth = request.json
-        if not auth or not auth.get('email') or not auth.get('password'):
-            return {
-                    "error": {
-                        "reason": "Missing login data. Please, check if there"\
-                                   + " are any missing information."
-                    }
-                }, 401
-
-        user = (User.query
-                        .filter_by(email = auth.get('email'))\
-                        .first())
-
-        if not user:
-            return {
-                    "error": {
-                        "reason": "User does not exist. Please, check that" \
-                            + " all the information you provided is correct."
-                    }
-                }, 401
-        if user.is_password_correct(auth.get('password')):
-            expires_at = str(datetime.utcnow() + timedelta(minutes = 30))
-            token = jwt.encode({
-                'id': user.id,
-                'expires_at': expires_at
-            }, _SECRET_KEY)
-            return {
-                    "token": token.decode('UTF-8'),
-                    "expires_at": expires_at
-                }, 201
-        return {
-                "error": {
-                    "reason": "The password you entered is incorrect."
-                }
-            }, 403
 
     @staticmethod
-    def signup(request):
-        data = request.json
-
-        email = data.get("email")
-        password = data.get("password")
-
-        # checking for existing user
+    def login(**data) -> None:
         user = (User.query
-                    .filter_by(email = email)\
+                    .filter_by(email=data["email"])
                     .first())
-        if not user:
-            # database ORM object
-            user = User(
-                email = email,
-                password = password
-            )
-            user.save()
 
-            return {
-                "success": {
-                    "message": "The user was successfully registered."
-                }
-            }, 201
-        else:
-            return {
-                "success": {
-                    "message": "User already exists. Please Log in."
-                }
-            }, 202
+        if not user:
+            abort(401, description="Invalid login or password.")
+
+        if user.is_password_correct(data["password"]):
+            i_token = Token()
+            i_token.encoding(user.id)
+            return success(
+                201,
+                message="The token was generated successfully.",
+                data={
+                    "user": {
+                        "id": user.get_id(),
+                        "created_at": user.created_at
+                    },
+                    "token": f"{i_token.type} {i_token.token}",
+                    "expires_at": i_token.expires_at
+                })
+
+        abort(401, description="Invalid login or password.")
 
     @staticmethod
-    def is_authenticated(request) -> bool:
-        token = None
+    def is_authenticated(request: Request) -> bool:
+        btoken = None
+        if "Authorization" in request.headers:
+            btoken = request.headers["Authorization"]
 
-        if 'Authorization' in request.headers:
-            btoken = request.headers['Authorization']
-            token = btoken.split('Bearer ')[-1]
-
-        if not token:
+        if not btoken:
             return False
 
         try:
-            data = jwt.decode(token, _SECRET_KEY)
-            User.query \
-                    .filter_by(id = data['id'])\
-                    .first()
-        except Exception as err:
+            data = Token.decoding(btoken)
+            user = (User.query
+                        .filter_by(id=data["id"])
+                        .first())
+        except:
             return False
+        else:
+            if not user:
+                return False
 
         return True

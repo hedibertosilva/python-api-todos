@@ -14,15 +14,15 @@ class User(db.Model):
             id (int) - sequential integer number
             email (string) - email address of the user
             password (string) - hashed password (using werkzeug.security)
-            registered_on - created time
+            created_at - created time
     """
 
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    registered_on = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, email: str, password: str):
         """
@@ -31,7 +31,7 @@ class User(db.Model):
         """
         self.email = email
         self.password = self._generate_password_hash(password)
-        self.registered_on = datetime.now()
+        self.created_at = datetime.now()
 
     def is_password_correct(self, password: str):
         return check_password_hash(self.password, password)
@@ -48,7 +48,7 @@ class User(db.Model):
         return generate_password_hash(password)
 
     def __repr__(self):
-        return f'<User: {self.email}>'
+        return f"<User: {self.email}>"
 
     @property
     def is_authenticated(self):
@@ -62,9 +62,9 @@ class User(db.Model):
 
     @property
     def is_anonymous(self):
-        """Always False, as anonymous users aren't supported."""
+        """Always False, as anonymous users aren"t supported."""
         return False
 
     def get_id(self):
         """Return the user ID as a unicode string (`str`)."""
-        return str(self.id)
+        return self.id

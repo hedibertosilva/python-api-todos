@@ -1,17 +1,19 @@
+from flask import abort
 from flask import Blueprint
 from flask import request
 
 from app.libs.auth import Auth
 
 
-auth_blueprint = Blueprint('auth_blueprint', __name__)
+auth_bp = Blueprint('auth_bp', __name__)
 
 
-@auth_blueprint.route('/v1/login', methods=["POST"])
+@auth_bp.route('/v1/login', methods=["POST"])
 def login():
-    return Auth.login(request)
+    email = request.json.get("email")
+    password = request.json.get("password")
 
+    if not request.json or not email or not password:
+        abort(401, description="Please, supply the credentials required.")
 
-@auth_blueprint.route('/v1/signup', methods=["POST"])
-def signup():
-    return Auth.signup(request)
+    return Auth.login(email=email, password=password)

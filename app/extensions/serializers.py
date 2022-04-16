@@ -1,6 +1,6 @@
 # pylint: disable=too-few-public-methods
 """
-    Provides adapters interfaces to treat third-party data.
+    Provides a serializer interface to treat third-party data.
 """
 from typing import Dict
 from typing import List
@@ -9,11 +9,11 @@ from flask import abort
 from app.sources.todos import Todos
 
 
-class TodosAdapter:
-    """ Provide a simple interface to retrieve data from external sources.
+class TodosSerializer:
+    """ Provide a simple interface to serialize data from external sources.
 
     Retrieves data from third-party sources to filter to the expected
-    output format and to limit the number of todos returned.
+    output format.
 
     Attributes:
         _instance (Todos): Todos instance.
@@ -30,7 +30,7 @@ class TodosAdapter:
         """ Receives 3rd-party data to return only accepted keys.
 
         Args:
-            todos (List[Dict]): third-party data
+            todos (List[Dict]): third-party data.
 
         Returns:
             List[Dict]: 3rd-party data if only accepted keys.
@@ -45,16 +45,13 @@ class TodosAdapter:
                 400,
                 description="Unexpected keys in the third-party data source.")
 
-    def get(self, limit: int = 5) -> List[Dict]:
+    @property
+    def data(self) -> List[Dict]:
         """ Returns filtered data limited by the parameter input.
-
-        Args:
-            limit (int, optional): Limits the number of TODOS returned.
-                                   Defaults to 5.
 
         Returns:
             List[Dict]: 3rd-party filtered and limited.
         """
-        todos = self._instance.all()[:limit]
+        todos = self._instance.all()
         todos = self._filter_keys(todos)
         return todos

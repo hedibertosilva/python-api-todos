@@ -3,11 +3,12 @@
 """
 from flask import Blueprint
 from flask import jsonify
+from flask import request
 from flask import Response
 
 from app.libs.auth import auth_required
 from app.sources.todos import Todos
-from app.extensions.adapters import TodosAdapter
+from app.extensions.serializers import TodosSerializer
 
 todos_bp = Blueprint('todos_bp', __name__)
 
@@ -20,6 +21,9 @@ def todos() -> Response:
     This route needs authentication.
     This route allows only GET Method.
 
+    Request Args:
+        - limit: number of tasks that it will be returned.
+
     Returns:
         Response: Returns a list of tasks from a TODO list. The response
                   follows the structure below:
@@ -31,7 +35,10 @@ def todos() -> Response:
                         ...
                     ]
     """
-    tasks = TodosAdapter(Todos())
-    tasks = tasks.get(limit=5)
+
+    limit = int(request.args.get('limit', default=5))
+
+    tasks = TodosSerializer(Todos())
+    tasks = tasks.data[:limit]
 
     return jsonify(tasks)

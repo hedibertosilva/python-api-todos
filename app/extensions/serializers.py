@@ -52,6 +52,4 @@ class TodosSerializer:
         Returns:
             List[Dict]: 3rd-party filtered and limited.
         """
-        todos = self._instance.all()
-        todos = self._filter_keys(todos)
-        return todos
+        return self._filter_keys(self._instance.data)

@@ -17,6 +17,7 @@ class Todos:
 
     Attributes:
         _data (list): Data collected. Defaults to empty list.
+        _limit (int): Number of tasks that it will be returned.
         _timeout (int): Timeout requests in seconds. Defaults to 3 secods.
         _attempts (int): Number of attempts to request. Defaults to 3 attempts.
         _url (str): Defaults to "https://jsonplaceholder.typicode.com/todos".
@@ -24,13 +25,15 @@ class Todos:
     """
 
     _data: list = []
+    _limit: int = 5
     _timeout: int = 3
     _attempts: int = 3
     _url: str = "https://jsonplaceholder.typicode.com/todos"
-    _sleep_time = 2
+    _sleep_time: int = 2
 
-    def __init__(self) -> None:
+    def __init__(self, limit: int = 5) -> None:
         """ Initializing collecting and sorting data. """
+        self._limit = limit
         self._get_data()
         self._sort_data()
 
@@ -65,6 +68,7 @@ class Todos:
                 400,
                 description="Unexpected keys in the third-party data source.")
 
-    def all(self) -> List[Dict]:
-        """ Returning the data sorted. """
-        return self._data
+    @property
+    def data(self) -> List[Dict]:
+        """ Returning the data sorted and limited. """
+        return self._data[:self._limit]

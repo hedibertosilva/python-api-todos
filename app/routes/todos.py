@@ -35,10 +35,11 @@ def todos() -> Response:
                         ...
                     ]
     """
+    try:
+        number_of_tasks = int(request.args.get('limit', default=5))
+    except ValueError:
+        number_of_tasks = 5
 
-    limit = int(request.args.get('limit', default=5))
+    tasks = TodosSerializer(Todos(limit=number_of_tasks))
 
-    tasks = TodosSerializer(Todos())
-    tasks = tasks.data[:limit]
-
-    return jsonify(tasks)
+    return jsonify(tasks.data)

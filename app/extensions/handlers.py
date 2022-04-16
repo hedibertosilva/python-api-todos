@@ -1,4 +1,3 @@
-# pylint: disable=import-error
 """
     Provides handlers methods to control exceptions.
 """

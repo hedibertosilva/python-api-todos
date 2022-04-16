@@ -1,3 +1,6 @@
+"""
+    Setup configurations.
+"""
 from setuptools import setup
 
 
@@ -6,7 +9,7 @@ setup(
       version="0.1",
       description="Proxy to 3rd party data.",
       author="Hediberto C. Silva",
-      author_email="hed.cavalcante@gmail.com",
+      author_username="hed.cavalcante@gmail.com",
       packages=["app"],
       zip_safe=False,
       install_requires=[

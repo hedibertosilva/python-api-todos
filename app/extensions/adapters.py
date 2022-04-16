@@ -1,4 +1,3 @@
-# pylint: disable=import-error
 # pylint: disable=too-few-public-methods
 """
     Provides adapters interfaces to treat third-party data.

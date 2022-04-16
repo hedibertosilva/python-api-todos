@@ -1,11 +1,12 @@
-# pylint: disable=import-error
+# pylint: disable=bare-except
 """
-    Provides Auth Tools to manage routes.
+    Provides auth tools to manage protected routes.
 """
 from functools import wraps
+from typing import Any
 from flask import abort
+from flask import Response
 from flask import request
-from flask.wrappers import Request
 
 from app.models.user import User
 from app.libs.token import Token
@@ -16,21 +17,29 @@ def auth_required(func):
     """ Decorate to require authentication for the selected routes. """
     @wraps(func)
     def decorated(*args, **kwargs):
-        if not Auth.is_authenticated(request):
+        if not Auth.is_authenticated(request.headers):
             abort(401,
                   description=(
-                      "You supplied the wrong credentials!"
+                      "You supplied the wrong credentials! "
                       "Expecting a Bearer Token."))
         return func(*args, **kwargs)
     return decorated
 
 
 class Auth:
-
+    """ Gather all auth methods. """
     @staticmethod
-    def login(**data) -> None:
+    def login(**data) -> Response:
+        """
+            Responsible to generate a new token if the credentials was
+            correctly suplied. If not, the method will raise HTTP status
+            code 401 alerting about invalid login or passsword.
+
+            Args:
+                data (Any)
+        """
         user = (User.query
-                    .filter_by(email=data["email"])
+                    .filter_by(username=data["username"])
                     .first())
 
         if not user:
@@ -54,10 +63,19 @@ class Auth:
         abort(401, description="Invalid login or password.")
 
     @staticmethod
-    def is_authenticated(request: Request) -> bool:
+    def is_authenticated(headers: dict) -> bool:
+        """ Check if that the token supplied it's valid and
+            it was associate with a valid user.
+
+        Args:
+            headers (dict): request.headers
+
+        Returns:
+            bool: Returns True if the user is authenticated. If not, False.
+        """
         btoken = None
-        if "Authorization" in request.headers:
-            btoken = request.headers["Authorization"]
+        if "Authorization" in headers:
+            btoken = headers["Authorization"]
 
         if not Token.is_valid(btoken):
             return False

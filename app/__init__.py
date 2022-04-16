@@ -15,6 +15,18 @@ db = SQLAlchemy()
 
 
 def create_app(config: str) -> Flask:
+    """ Creates a new instance from app.
+
+    Loads the initial environment configurations using the pyconfig
+    file on instance parent path. It also initializer the extensions
+    and register all blueprints routes.
+
+    Args:
+        config (str): Filename.
+
+    Returns:
+        Flask: Returns a Flask instance.
+    """
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile(config)
     initialize_extensions(app)
@@ -22,7 +34,14 @@ def create_app(config: str) -> Flask:
     return app
 
 
-def initialize_extensions(app):
+def initialize_extensions(app: Flask) -> None:
+    """ Initializer all extensions and register error handlers.
+
+    By default, the system will register the first: <User: admin>"
+
+    Args:
+        app (Flask): Instance configured.
+    """
     from app.models.user import User
 
     with app.app_context():
@@ -37,7 +56,12 @@ def initialize_extensions(app):
         app.register_error_handler(HTTPException, handle_error)
 
 
-def register_blueprints(app):
+def register_blueprints(app: Flask) -> None:
+    """ Registering all the routes.
+
+    Args:
+        app (Flask): Instance configured.
+    """
     from app.routes.auth import auth_bp
     from app.routes.users import users_bp
     from app.routes.todos import todos_bp

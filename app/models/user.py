@@ -64,7 +64,3 @@ class User(db.Model):
     def is_anonymous(self):
         """Always False, as anonymous users aren"t supported."""
         return False
-
-    def get_id(self):
-        """Return the user ID as a unicode string (`str`)."""
-        return self.id

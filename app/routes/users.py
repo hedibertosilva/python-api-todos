@@ -30,7 +30,7 @@ def users():
             201,
             message="The user has been successfully registered.",
             data={
-                "id": i_user.get_id(),
+                "id": i_user.id,
                 "email": i_user.email,
                 "created_at": i_user.created_at
             })

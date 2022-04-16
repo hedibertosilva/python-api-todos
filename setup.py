@@ -10,6 +10,7 @@ setup(
       packages=["app"],
       zip_safe=False,
       install_requires=[
+          "requests==2.27.*",
           "python-dotenv==0.20.*",
           "Flask==2.1.1",
           "gunicorn==20.1.*",

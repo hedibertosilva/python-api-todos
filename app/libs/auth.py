@@ -1,7 +1,11 @@
+# pylint: disable=import-error
+"""
+    Provides Auth Tools to manage routes.
+"""
+from functools import wraps
 from flask import abort
 from flask import request
 from flask.wrappers import Request
-from functools import wraps
 
 from app.models.user import User
 from app.libs.token import Token
@@ -9,10 +13,14 @@ from app.extensions.responses import success
 
 
 def auth_required(func):
+    """ Decorate to require authentication for the selected routes. """
     @wraps(func)
     def decorated(*args, **kwargs):
         if not Auth.is_authenticated(request):
-            abort(401, description="You supplied the wrong credentials! Expecting a Bearer Token.")
+            abort(401,
+                  description=(
+                      "You supplied the wrong credentials!"
+                      "Expecting a Bearer Token."))
         return func(*args, **kwargs)
     return decorated
 
@@ -36,10 +44,10 @@ class Auth:
                 message="The token was generated successfully.",
                 data={
                     "user": {
-                        "id": user.get_id(),
+                        "id": user.id,
                         "created_at": user.created_at
                     },
-                    "token": f"{i_token.type} {i_token.token}",
+                    "token": i_token.bearer_token,
                     "expires_at": i_token.expires_at
                 })
 
@@ -51,7 +59,7 @@ class Auth:
         if "Authorization" in request.headers:
             btoken = request.headers["Authorization"]
 
-        if not btoken:
+        if not Token.is_valid(btoken):
             return False
 
         try:

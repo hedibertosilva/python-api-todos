@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
 from sqlalchemy import exc
 
-from app.extensions.error_handler import handle_exception
+from app.extensions.handlers import handle_error
 
 
 db = SQLAlchemy()
@@ -34,7 +34,7 @@ def initialize_extensions(app):
             db.session.commit()
         except exc.IntegrityError:
             db.session.rollback()
-        app.register_error_handler(HTTPException, handle_exception)
+        app.register_error_handler(HTTPException, handle_error)
 
 
 def register_blueprints(app):

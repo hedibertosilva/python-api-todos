@@ -1,16 +1,16 @@
 import jwt
 from datetime import datetime
 from datetime import timedelta
-from typing import Mapping
+from typing import Any, Mapping
 
 
 
 
 class Token:
 
-    type: str = "Bearer"
-    token: str
-    expires_at: str
+    _type: str = "Bearer"
+    _token: str
+    _expires_at: str
 
     def encoding(self, id: int) -> str:
         from flask import current_app as app
@@ -20,7 +20,7 @@ class Token:
             "id": id,
             "expires_at": self.expires_at
         }, app.config['SECRET_KEY'])
-        self.token = token_in_bytes.decode("UTF-8")
+        self._token = token_in_bytes.decode("UTF-8")
 
     @classmethod
     def decoding(cls, btoken: str) -> Mapping:
@@ -31,4 +31,18 @@ class Token:
 
     @classmethod
     def _remove_type_from(cls, btoken: str) -> str:
-        return btoken.split(cls.type)[-1].strip()
+        return btoken.split(cls._type)[-1].strip()
+
+    @classmethod
+    def is_valid(cls, btoken: str) -> bool:
+        if not btoken:
+            return False
+        return cls._type in btoken
+
+    @property
+    def bearer_token(self) -> str:
+        return f"{self._type} {self._token}"
+
+    @property
+    def expire_at(self) -> str:
+        return self._expires_at

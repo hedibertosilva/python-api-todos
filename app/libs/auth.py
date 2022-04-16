@@ -3,7 +3,6 @@
     Provides auth tools to manage protected routes.
 """
 from functools import wraps
-from typing import Any
 from flask import abort
 from flask import Response
 from flask import request
@@ -38,6 +37,11 @@ class Auth:
             Args:
                 data (Any)
         """
+        from flask import current_app as app
+
+
+        _secret_key = app.config['SECRET_KEY']
+
         user = (User.query
                     .filter_by(username=data["username"])
                     .first())
@@ -46,7 +50,7 @@ class Auth:
             abort(401, description="Invalid login or password.")
 
         if user.is_password_correct(data["password"]):
-            i_token = Token()
+            i_token = Token(_secret_key)
             i_token.encoding(user.id)
             return success(
                 201,
@@ -73,15 +77,20 @@ class Auth:
         Returns:
             bool: Returns True if the user is authenticated. If not, False.
         """
+        from flask import current_app as app
+
+
+        _secret_key = app.config['SECRET_KEY']
+
         btoken = None
         if "Authorization" in headers:
             btoken = headers["Authorization"]
 
-        if not Token.is_valid(btoken):
+        if not Token.is_bearer(btoken):
             return False
 
         try:
-            data = Token.decoding(btoken)
+            data = Token(_secret_key).decoding(btoken)
             user = (User.query
                         .filter_by(id=data["id"])
                         .first())

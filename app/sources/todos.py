@@ -3,6 +3,7 @@
     TODOS third-party data source.
 """
 import time
+from typing import Any
 from typing import Dict
 from typing import List
 from operator import itemgetter
@@ -25,17 +26,43 @@ class Todos:
     """
 
     _data: list = []
-    _limit: int = 5
-    _timeout: int = 3
-    _attempts: int = 3
-    _url: str = "https://jsonplaceholder.typicode.com/todos"
     _sleep_time: int = 2
+    _limit: int
+    _timeout: int
+    _attempts: int
+    _url: str
 
-    def __init__(self, limit: int = 5) -> None:
+    def __init__(
+        self,
+        limit: int = 5,
+        timeout: int = 3,
+        attempts: int = 3,
+        url: str = "https://jsonplaceholder.typicode.com/todos"
+    ) -> None:
         """ Initializing collecting and sorting data. """
-        self._limit = limit
+        self._limit = self._validate_int_input(limit, default=5)
+        self._timeout = self._validate_int_input(timeout, default=3)
+        self._attempts = self._validate_int_input(attempts, default=3)
+        self._url = url
+
         self._get_data()
         self._sort_data()
+
+    def _validate_int_input(self, value: Any, default: int) -> int:
+        """ Valid input integer data.
+
+        Args:
+            value (Any): original input.
+            default (int): value for unexpected errors.
+
+        Returns:
+            int: value checked.
+        """
+        try:
+            value = int(value)
+            return value if value > 0 else default
+        except (TypeError, ValueError):
+            return default
 
     def _get_data(self) -> None:
         """ Collecting data from 3rd-party source provided on URL variable
@@ -47,17 +74,19 @@ class Todos:
             For all another exception (RequestException) it will raises a code
             status 400 with the message "Failed to collect data."
          """
-        for _ in range(self._attempts):
+        for attempt in range(self._attempts):
             try:
                 self._data = (requests
                               .get(self._url, timeout=self._timeout)
                               .json())
-                break
             except (rexc.Timeout, rexc.ConnectionError):
-                time.sleep(self._sleep_time)
-                continue
+                if attempt < self._attempts-1:
+                    continue
             except rexc.RequestException:
                 abort(400, description="Failed to collect data.")
+            if not self._data:
+                abort(400, description="Failed to collect data.")
+            break
 
     def _sort_data(self) -> None:
         """ Sorting data using id key. """

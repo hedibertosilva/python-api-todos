@@ -3,6 +3,7 @@
         The main script responsible for creating a new
         instances of the application.
 """
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
@@ -44,11 +45,14 @@ def initialize_extensions(app: Flask) -> None:
     """
     from app.models.user import User
 
+    default_admin_user = os.environ.get("ADMIN_USER", "admin")
+    default_admin_password = os.environ.get("ADMIN_PASSWORD", "admin")
+
     with app.app_context():
         db.init_app(app)
         db.create_all()
         try:
-            new_user = User("admin", "admin")
+            new_user = User(default_admin_user, default_admin_password)
             db.session.add(new_user)
             db.session.commit()
         except exc.IntegrityError:

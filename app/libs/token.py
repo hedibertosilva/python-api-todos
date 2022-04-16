@@ -15,11 +15,25 @@ class Token:
         _token (str): Token generated.
         _type (str): Token type. Defaults to "Bearer".
         _expires_at (str): Datetime that token generated will be expired.
+        _token_timedelta (int): Seconds to token expiration time.
     """
 
     _token: str = ""
     _type: str = "Bearer"
     _expires_at: str = ""
+    _secret_key: str  = ""
+    _token_timedelta: int = 86400
+
+    def __init__(
+        self,
+        secret_key: str = "",
+        token_timedelta: int = 86400
+    ) -> None:
+        """ Initializes the Token class with the secret key as a
+            injected dependency.
+        """
+        self._secret_key = secret_key
+        self._token_timedelta = token_timedelta
 
     def encoding(self, user_id: int) -> str:
         """ Returns token in string format.
@@ -30,17 +44,18 @@ class Token:
         Returns:
             str: Token decoded in UTF-8.
         """
-        from flask import current_app as app
-
-        self._expires_at = str(datetime.utcnow() + timedelta(hours=24))
+        self._expires_at = str(self._calc_expiration_time())
         token_in_bytes = encode({
             "id": user_id,
             "expires_at": self._expires_at
-        }, app.config['SECRET_KEY'])
+        }, self._secret_key)
         self._token = token_in_bytes.decode("UTF-8")
 
-    @classmethod
-    def decoding(cls, btoken: str) -> dict:
+    def _calc_expiration_time(self) -> str:
+        """ Calculating token expiration time. """
+        return datetime.utcnow() + timedelta(seconds=self._token_timedelta)
+
+    def decoding(self, btoken: str) -> dict:
         """ Decoding Bearer Token.
 
         Args:
@@ -49,13 +64,10 @@ class Token:
         Returns:
             dict: Token data decoded (id, expires_at).
         """
-        from flask import current_app as app
+        token = self._remove_type_from(btoken)
+        return decode(token, self._secret_key)
 
-        token = cls._remove_type_from(btoken)
-        return decode(token, app.config['SECRET_KEY'])
-
-    @classmethod
-    def _remove_type_from(cls, btoken: str) -> str:
+    def _remove_type_from(self, btoken: str) -> str:
         """ Removing token type from token string.
 
         Args:
@@ -64,10 +76,10 @@ class Token:
         Returns:
             str: Token striped without Bearer word.
         """
-        return btoken.split(cls._type)[-1].strip()
+        return btoken.split(self._type)[-1].strip()
 
     @classmethod
-    def is_valid(cls, btoken: str) -> bool:
+    def is_bearer(cls, btoken: str) -> bool:
         """ Checking if the token supplied is Bearer type.
 
         Args:

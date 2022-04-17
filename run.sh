@@ -17,4 +17,4 @@ export ADMIN_PASSWORD=admin
 
 PUBLISHED_PORT=5000
 
-flask run -h 0.0.0.0 -p $PUBLISHED_PORT
+gunicorn --bind 0.0.0.0:5000  wsgi:app --capture-output --enable-stdio-inheritance

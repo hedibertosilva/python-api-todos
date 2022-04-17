@@ -48,7 +48,8 @@ class Todos:
         self._get_data()
         self._sort_data()
 
-    def _validate_int_input(self, value: Any, default: int) -> int:
+    @staticmethod
+    def _validate_int_input(value: Any, default: int) -> int:
         """ Valid input integer data.
 
         Args:

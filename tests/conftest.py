@@ -69,6 +69,7 @@ def test_client():
 
 @pytest.fixture
 def btoken(test_client):
+    """ Logging on the app. """
     default_admin_user = os.environ.get("ADMIN_USER", "admin")
     default_admin_password = os.environ.get("ADMIN_PASSWORD", "admin")
 

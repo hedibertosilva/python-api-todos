@@ -11,6 +11,8 @@ from flask import abort
 import requests
 import requests.exceptions as rexc
 
+from app import logging
+
 
 class Todos:
     """ Collecting third-party data source.
@@ -77,16 +79,18 @@ class Todos:
          """
         for attempt in range(self._attempts):
             try:
-                self._data = (requests
-                              .get(self._url, timeout=self._timeout)
-                              .json())
+                response = requests.get(self._url, timeout=self._timeout)
+                self._data = response.json()
             except (rexc.Timeout, rexc.ConnectionError):
                 if attempt < self._attempts-1:
                     continue
             except rexc.RequestException:
                 abort(400, description="Failed to collect data.")
-            if not self._data:
-                abort(400, description="Failed to collect data.")
+            finally:
+                if not self._data:
+                    abort(400, description="Failed to collect data.")
+                logging.info(response.status_code)
+                logging.info(self._data)
             break
 
     def _sort_data(self) -> None:

@@ -4,6 +4,7 @@
         instances of the application.
 """
 import os
+import logging
 from flask import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -15,9 +16,11 @@ from app.extensions.handlers import handle_error
 
 
 db = SQLAlchemy()
+logging.basicConfig(level='DEBUG')
 
 
 class TestClient(FlaskClient):
+    """ Manage test client request to dumps json field into data. """
     def open(self, *args, **kwargs):
         if "json" in kwargs:
             kwargs["data"] = json.dumps(kwargs.pop("json"))

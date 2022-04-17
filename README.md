@@ -44,6 +44,8 @@ Before running the command, make sure you have a free port 5000 on the host. If 
   sh run.sh
 ```
 
+**Obs.:** The SECRET_KEY can be defined by environment variable, but if not be, it will be defined automatic with a random string.
+
 ## Usage
 
 The application uses JWT module to ensure system security, so you must login to get the Bearer Token before list the TODO tasks. 

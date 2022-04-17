@@ -1,5 +1,4 @@
-FROM python:3.9-bullseye
-EXPOSE 80
+FROM python:3.9-slim-bullseye
 
 ENV PYTHONUNBUFFERED=TRUE
 
@@ -13,4 +12,4 @@ WORKDIR /app
 
 RUN pip install .
 
-CMD gunicorn --bind 0.0.0.0:80  wsgi:app --capture-output --enable-stdio-inheritance
+CMD gunicorn --bind 0.0.0.0:5000  wsgi:app --capture-output --enable-stdio-inheritance

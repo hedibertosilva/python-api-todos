@@ -7,10 +7,13 @@ services:
     build:
       context: .
       dockerfile: dockerfile
+    environment:
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=admin
     ports:
       - mode: host
-        published: 80
-        target: 80
+        published: 5000
+        target: 5000
     logging:
       driver: "json-file"
       options:

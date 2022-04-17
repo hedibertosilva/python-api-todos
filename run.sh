@@ -7,10 +7,14 @@ then
 else
     python3 -m venv venv
     . venv/bin/activate
-    pip install pip --upgrade
     pip install .
 fi
 
-export FLASK_DEBUG=True
+export FLASK_DEBUG=False
+export FLASK_APP=wsgi.py
+export ADMIN_USER=admin
+export ADMIN_PASSWORD=admin
 
-python3 wsgi.py -e testing
+PUBLISHED_PORT=5000
+
+flask run -h 0.0.0.0 -p $PUBLISHED_PORT

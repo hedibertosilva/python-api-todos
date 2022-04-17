@@ -12,9 +12,10 @@ import requests
 import requests.exceptions as rexc
 
 from app import logging
+from app.sources.interfaces.todos import AbstractTodos
 
 
-class Todos:
+class Todos(AbstractTodos):
     """ Collecting third-party data source.
 
     Attributes:

@@ -18,7 +18,8 @@ setup(
           "python-dotenv==0.20.*",
           "Flask==2.1.1",
           "gunicorn==20.1.*",
-          "Flask-SQLAlchemy==2.5.*"
+          "Flask-SQLAlchemy==2.5.*",
+          "tox==3.25.*"
       ],
       extras_require={
           "test": [

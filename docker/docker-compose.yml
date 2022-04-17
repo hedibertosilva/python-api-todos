@@ -1,0 +1,18 @@
+version: "3.3"
+
+services:
+  api:
+    container_name: api-todos
+    image: api-todos:1.0
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - mode: host
+        published: 80
+        target: 80
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"

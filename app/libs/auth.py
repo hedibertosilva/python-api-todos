@@ -90,6 +90,8 @@ class Auth:
 
         try:
             data = Token(_secret_key).decoding(btoken)
+            if Token.is_expired(data):
+                return False
             user = (User.query
                         .filter_by(id=data["id"])
                         .first())

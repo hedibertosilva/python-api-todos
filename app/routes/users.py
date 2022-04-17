@@ -6,6 +6,7 @@ from flask import Blueprint
 from flask import request
 from flask import Response
 
+from app import logging
 from app.models.user import User
 from app.extensions.responses import success
 
@@ -60,6 +61,8 @@ def users() -> Response:
                 .first())
 
     if not user:
+        logging.debug(
+            f"[USER] [REGISTRATION] New user added. Username {username}")
         i_user = User(username=username, password=password)
         i_user.save()
         return success(

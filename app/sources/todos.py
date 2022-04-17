@@ -82,16 +82,28 @@ class Todos(AbstractTodos):
             try:
                 response = requests.get(self._url, timeout=self._timeout)
                 self._data = response.json()
-            except (rexc.Timeout, rexc.ConnectionError):
+            except rexc.Timeout as err:
+                logging.debug("[TODOS] [ERROR] Timeout")
+                logging.debug(err)
                 if attempt < self._attempts-1:
                     continue
-            except rexc.RequestException:
+            except rexc.ConnectionError as err:
+                logging.debug("[TODOS] [ERROR] ConnectionError")
+                logging.debug(err)
+                if attempt < self._attempts-1:
+                    continue
+            except rexc.RequestException as err:
+                logging.debug("[TODOS] [ERROR] RequestException")
+                logging.debug(f"[TODOS] [REQUEST] [URL] {self._url}")
+                logging.debug(err)
                 abort(400, description="Failed to collect data.")
             finally:
+                logging.debug(f"[TODOS] [REQUEST] [URL] {self._url}")
+                logging.debug("[TODOS] [RESPONSE] [DATA]")
+                logging.debug(self._data)
                 if not self._data:
+                    logging.debug("[TODOS] [ERROR] Failed to collect data.")
                     abort(400, description="Failed to collect data.")
-                logging.info(response.status_code)
-                logging.info(self._data)
             break
 
     def _sort_data(self) -> None:
@@ -99,6 +111,11 @@ class Todos(AbstractTodos):
         try:
             self._data = sorted(self._data, key=itemgetter("id"))
         except KeyError:
+            logging.debug(
+                "[TODOS] [ERROR] Unexpected keys in third-party data source."
+                + " Expecting id.")
+            logging.debug("[TODOS] [DATA]")
+            logging.debug(self._data)
             abort(
                 400,
                 description="Unexpected keys in the third-party data source.")

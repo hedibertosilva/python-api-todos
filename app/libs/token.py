@@ -101,6 +101,17 @@ class Token:
         """
         return f"{self._type} {self._token}"
 
+    @staticmethod
+    def is_expired(token_data) -> bool:
+        """ Checking if token is expired. """
+        now = datetime.utcnow()
+        date = datetime.strptime(
+            token_data["expires_at"],
+            "%Y-%m-%d %H:%M:%S.%f")
+        if date < now:
+            return True
+        return False
+
     @property
     def expires_at(self) -> str:
         """ Returns expires token datetime.

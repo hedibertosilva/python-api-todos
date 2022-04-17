@@ -42,3 +42,14 @@ def test_token_expiration_time():
     date = datetime.strptime(token_data["expires_at"], "%Y-%m-%d %H:%M:%S.%f")
 
     assert date < now
+
+def test_token_is_expired():
+    """ Testing calculate to expiration time. """
+    i_token = Token(secret_key, token_timedelta=2)
+    i_token.encoding(user_id=10)
+    btoken = i_token.bearer_token
+    token_data = i_token.decoding(btoken)
+
+    assert not Token.is_expired(token_data)
+    time.sleep(2)
+    assert Token.is_expired(token_data)

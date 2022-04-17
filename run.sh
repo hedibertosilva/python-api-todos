@@ -18,4 +18,4 @@ export ADMIN_PASSWORD=admin
 
 PUBLISHED_PORT=5000
 
-gunicorn --bind 0.0.0.0:5000  wsgi:app --capture-output --enable-stdio-inheritance
+gunicorn --bind 0.0.0.0:$PUBLISHED_PORT  wsgi:app --capture-output --enable-stdio-inheritance

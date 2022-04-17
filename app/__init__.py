@@ -21,7 +21,10 @@ DEFAULT_ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
 DEFAULT_ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
 
 
-logging.basicConfig(level='DEBUG')
+logging.basicConfig(
+    format='[%(asctime)s] [%(process)d] [%(levelname)s] %(message)s',
+    level=logging.DEBUG,
+    datefmt='%Y-%m-%d %H:%M:%S %z')
 
 
 class TestClient(FlaskClient):

@@ -6,6 +6,7 @@ from typing import Dict
 from typing import List
 from flask import abort
 
+from app import logging
 from app.sources.todos import Todos
 
 
@@ -41,14 +42,22 @@ class TodosSerializer:
             List[Dict]: 3rd-party data if only accepted keys.
         """
         try:
-            return list(
+            response = list(
                 map(lambda item: {k: item[k] for k in self._accepted_keys},
                     todos)
             )
+            logging.debug("[TODOS] [SERIALIZER] [RESPONSE] [DATA]")
+            logging.debug(todos)
         except (TypeError, KeyError):
+            logging.debug(
+                "[TODOS] [SERIALIZER] [ERROR] Unexpected keys in the "
+                + f"third-party data source. Expecting {self._accepted_keys}.")
+            logging.debug("[TODOS] [SERIALIZER] [DATA]")
+            logging.debug(todos)
             return abort(
                 400,
                 description="Unexpected keys in the third-party data source.")
+        return response
 
     @property
     def data(self) -> List[Dict]:

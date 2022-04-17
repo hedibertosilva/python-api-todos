@@ -12,7 +12,7 @@ The project was designed as a loosely coupled system that accepts serveral diffe
 Before you begin, ensure you have met the following requirements:
 * You have installed the version of Python between v3.7 and v3.9 (JWT module still doesn't work in Python 3.10). 
 * You have installed the latest version of Pip.
-*  deployment with virtualenv, you have installed the latest version of virtualenv (pip module).
+* For deployment with virtualenv, you have installed the latest version of virtualenv (pip module).
 * For deployment with Docker, you have installed the version of Docker >= v20. 
 * For deployment with Docker, you have installed the version of Docker-compose >= v1.28. 
 * For testing, you have installed the lastest version of Tox (pip module).
@@ -35,7 +35,7 @@ If you prefer to use a docker stack, ensuring that you already init the swarm be
 
 #### Using Virtual Environment
 
-Before running the command, make sure you have a free port 5000 on the host. If not, you must change the published port variable on the `run.sh` file in the root project path.  
+Before running the command, make sure you have a free port 5000 on the host. If not, you must change the published port variable on the `run.sh` file in the root project path.
 
 ``` console
   chmod +x run.sh
@@ -45,6 +45,7 @@ Before running the command, make sure you have a free port 5000 on the host. If 
 ```
 
 **Obs.:** The SECRET_KEY can be defined by environment variable, but if not be, it will be defined automatic with a random string.
+**Obs.2:** The requirements pip modules are described on `setup.py` and `requirements.txt` files. It will be auto installed when you execute the steps above. 
 
 ## Usage
 

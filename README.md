@@ -28,7 +28,7 @@ Before running the command, make sure you have a free port 5000 on the host. If 
 ``` console
   docker-compose -f docker/docker-compose.yml up -d --build
 ```
-If you prefer to use a docker stack, ensuring that you already init the swarm, use:
+If you prefer to use a docker stack, ensuring that you already init the swarm before.
 ``` console
   docker stack deploy -c docker/docker-compose.yml api-todos
 ```
@@ -43,6 +43,8 @@ Before running the command, make sure you have a free port 5000 on the host. If 
 ``` console
   sh run.sh
 ```
+
+**Obs.:** The SECRET_KEY can be defined by environment variable, but if not be, it will be defined automatic with a random string.
 
 ## Usage
 
@@ -170,10 +172,10 @@ curl --location --request GET 'http://127.0.0.1:5000/v1/todos?limit=1' \
 
 ##### Response
 
-    HTTP/1.1 201 Created
-    Status: 201 Created
+    HTTP/1.1 200 OK
+    Status: 200 OK
     Content-Type: application/json
-    Content-Length: 141
+    Content-Length: 40
 
 ``` json
 [{

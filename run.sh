@@ -7,8 +7,9 @@ then
 else
     python3 -m venv venv
     . venv/bin/activate
-    pip install .
 fi
+
+pip install .
 
 export FLASK_DEBUG=False
 export FLASK_APP=wsgi.py

@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 setup(
-    name="python-api-jsonplaceholder-todos",
+    name="python-api-todos",
       version="1.0",
       description="Proxy to 3rd party data.",
       author="Hediberto C. Silva",

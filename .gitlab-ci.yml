@@ -1,0 +1,38 @@
+image: python:3.9-bullseye
+
+stages:
+  - test
+  - reports
+
+before_script:
+  - python3 --version
+  - pip3 --version
+  - python3 -m venv venv
+  - source venv/bin/activate
+  - pip3 install tox
+
+.cache: &global_cache
+  paths:
+    - venv/
+
+test job:
+  stage: test
+  script: tox -r -e coverage
+  cache:
+    <<: *global_cache
+    policy: pull-push
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+      junit: report.xml
+
+pep8 job:
+  stage: reports
+  script: tox -r -e pep8 >> pep8.txt
+  cache:
+    <<: *global_cache
+    policy: pull
+  artifacts:
+    paths:
+      - pep8.txt

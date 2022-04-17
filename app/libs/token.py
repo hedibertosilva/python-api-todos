@@ -21,7 +21,7 @@ class Token:
     _token: str = ""
     _type: str = "Bearer"
     _expires_at: str = ""
-    _secret_key: str  = ""
+    _secret_key: str = ""
     _token_timedelta: int = 86400
 
     def __init__(

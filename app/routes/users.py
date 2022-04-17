@@ -52,7 +52,8 @@ def users() -> Response:
     password = request.json.get("password")
 
     if not username or not password:
-        abort(400, description="Please, supply the username and password data.")
+        abort(400,
+              description="Please, supply the username and password data.")
 
     user = (User.query
                 .filter_by(username=username)

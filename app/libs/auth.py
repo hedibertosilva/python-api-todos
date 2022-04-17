@@ -2,6 +2,7 @@
 """
     Provides auth tools to manage protected routes.
 """
+from jwt.exceptions import DecodeError
 from functools import wraps
 from flask import abort
 from flask import Response
@@ -38,7 +39,6 @@ class Auth:
                 data (Any)
         """
         from flask import current_app as app
-
 
         _secret_key = app.config['SECRET_KEY']
 
@@ -79,7 +79,6 @@ class Auth:
         """
         from flask import current_app as app
 
-
         _secret_key = app.config['SECRET_KEY']
 
         btoken = None
@@ -94,7 +93,7 @@ class Auth:
             user = (User.query
                         .filter_by(id=data["id"])
                         .first())
-        except:
+        except (KeyError, DecodeError):
             return False
         else:
             if not user:

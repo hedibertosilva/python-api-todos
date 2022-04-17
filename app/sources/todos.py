@@ -2,7 +2,6 @@
 """
     TODOS third-party data source.
 """
-import time
 from typing import Any
 from typing import Dict
 from typing import List
@@ -22,7 +21,8 @@ class Todos:
         _timeout (int): Timeout requests in seconds. Defaults to 3 secods.
         _attempts (int): Number of attempts to request. Defaults to 3 attempts.
         _url (str): Defaults to "https://jsonplaceholder.typicode.com/todos".
-        _sleep_time (int): Seconds to hold the execution. Defaults to 2 seconds.
+        _sleep_time (int): Seconds to hold the execution.
+                           Defaults to 2 seconds.
     """
 
     _data: list = []

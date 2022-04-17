@@ -196,7 +196,9 @@ For Pep8 test, use:
  tox -r -e pep8
 ```
 
-## CI (only on GitLab)
+## C.I. (only on GitLab)
+
+See this repository on [Gitlab](https://gitlab.com/hediberto/python-api-todos/-/pipelines).
 
 Use `.gitlab-ci.yml` file.
 

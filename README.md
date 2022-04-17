@@ -28,7 +28,7 @@ Before running the command, make sure you have a free port 5000 on the host. If 
 ``` console
   docker-compose -f docker/docker-compose.yml up -d --build
 ```
-If you prefer to use a docker stack, ensuring that you already init the swarm, use:
+If you prefer to use a docker stack, ensuring that you already init the swarm before.
 ``` console
   docker stack deploy -c docker/docker-compose.yml api-todos
 ```

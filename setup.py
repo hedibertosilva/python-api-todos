@@ -22,6 +22,7 @@ setup(
       ],
       extras_require={
           "test": [
+              "coverage",
               "pytest",
               "mypy",
               "flake8"

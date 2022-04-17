@@ -39,7 +39,7 @@ def login() -> Response:
                         "message": str
                     }
                   If username or password data wasn't supplied on body, returns
-                  status code 401 on follow structure:
+                  status code 400 on follow structure:
                     {
                         "error": {
                             "reason": "Unauthorized. Please, supply the
@@ -51,6 +51,6 @@ def login() -> Response:
     password = request.json.get("password")
 
     if not request.json or not username or not password:
-        abort(401, description="Please, supply the credentials required.")
+        abort(400, description="Please, supply the credentials required.")
 
     return Auth.login(username=username, password=password)

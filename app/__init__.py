@@ -4,8 +4,10 @@
         instances of the application.
 """
 import os
+from flask import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask.testing import FlaskClient
 from werkzeug.exceptions import HTTPException
 from sqlalchemy import exc
 
@@ -13,6 +15,14 @@ from app.extensions.handlers import handle_error
 
 
 db = SQLAlchemy()
+
+
+class TestClient(FlaskClient):
+    def open(self, *args, **kwargs):
+        if "json" in kwargs:
+            kwargs["data"] = json.dumps(kwargs.pop("json"))
+            kwargs["content_type"] = "application/json"
+        return super(TestClient, self).open(*args, **kwargs)
 
 
 def create_app(config: str) -> Flask:
@@ -30,6 +40,7 @@ def create_app(config: str) -> Flask:
     """
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile(config)
+    app.test_client_class = TestClient
     initialize_extensions(app)
     register_blueprints(app)
     return app

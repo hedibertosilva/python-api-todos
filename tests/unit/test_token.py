@@ -11,7 +11,7 @@ from app.libs.token import Token
 secret_key = token_urlsafe(32)
 
 
-def test_encoding_and_decoding():
+def test_encoding_and_decoding_token():
     """ Testing encode and decode token. """
     i_token = Token(secret_key)
     i_token.encoding(user_id=10)
@@ -26,7 +26,7 @@ def test_encoding_and_decoding():
     ["Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9", True],
     ["eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9", False]
 ])
-def test_method_is_bearer(btoken, result):
+def test_method_is_bearer_token(btoken, result):
     """ Testing classmethod is_bearer. """
     assert Token.is_bearer(btoken) == result
 

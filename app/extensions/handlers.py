@@ -17,9 +17,10 @@ def handle_error(err: HTTPException) -> Response:
     """
     response = err.get_response()
     response.content_type = "application/json"
+    reason = f"{err.name}. {err.description}"
     response.data = json.dumps({
         "error": {
-            "reason": f"{err.name}. {err.description}"
+            "reason": reason
         }
     })
     return response

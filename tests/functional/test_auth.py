@@ -1,21 +1,17 @@
 """
     AUTH: functional tests.
 """
-import os
-
+from app import DEFAULT_ADMIN_USER
+from app import DEFAULT_ADMIN_PASSWORD
 from app.libs.token import Token
 
 
 def test_successful_login(test_client):
     """ Testing to login. """
-
-    default_admin_user = os.environ.get("ADMIN_USER", "admin")
-    default_admin_password = os.environ.get("ADMIN_PASSWORD", "admin")
-
     response = test_client.post("/v1/login",
                                 json={
-                                    "username": default_admin_user,
-                                    "password": default_admin_password
+                                    "username": DEFAULT_ADMIN_USER,
+                                    "password": DEFAULT_ADMIN_PASSWORD
                                 },
                                 follow_redirects=True)
 

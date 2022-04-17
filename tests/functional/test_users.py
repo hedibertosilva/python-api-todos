@@ -1,9 +1,11 @@
 """
     USERS: functional tests.
 """
-import os
 import string
 import random
+
+from app import DEFAULT_ADMIN_USER
+from app import DEFAULT_ADMIN_PASSWORD
 
 
 def test_successful_user_registration(test_client):
@@ -39,14 +41,10 @@ def test_user_registration_without_body(test_client):
 
 def test_user_already_exists(test_client):
     """ Testing if users is already registered. """
-
-    default_admin_user = os.environ.get("ADMIN_USER", "admin")
-    default_admin_password = os.environ.get("ADMIN_PASSWORD", "admin")
-
     response = test_client.post("/v1/users",
                                 json={
-                                    "username": default_admin_user,
-                                    "password": default_admin_password
+                                    "username": DEFAULT_ADMIN_USER,
+                                    "password": DEFAULT_ADMIN_PASSWORD
                                 },
                                 follow_redirects=True)
 
